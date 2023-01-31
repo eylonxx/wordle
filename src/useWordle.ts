@@ -2,9 +2,31 @@ import { useState } from 'react';
 
 const useWordle = (word: string) => {
   const [turn, setTurn] = useState(0);
-  const [currGuess, setCurrGuess] = useState('');
+  const [currGuess, setCurrGuess] = useState<string>('');
   const [guesses, setGuesses] = useState([...Array(6).fill([...Array(5).fill({ letter: '', color: 'gray' })])]);
+  const [error, setError] = useState('');
   const [isWinner, setIsWinner] = useState(false);
+
+  enum Status {
+    NOTENOUGHLETTERS = '1',
+    WINNER = '2',
+  }
+
+  const setStatusMessage = (caseNumber: Status) => {
+    setTimeout(() => {
+      console.log('in time out');
+
+      return '';
+    }, 10000);
+    switch (caseNumber) {
+      case '1':
+        return 'Not Enough Letters';
+      case '2':
+        return 'Winner!';
+      default:
+        return '';
+    }
+  };
 
   const handleKeyup = (e: React.KeyboardEvent): void => {
     if (isWinner) return;
@@ -18,9 +40,9 @@ const useWordle = (word: string) => {
     }
     if (e.key === 'Enter') {
       if (currGuess.length < 5) {
-        console.log('Not enough letters');
+        console.log(setStatusMessage(Status.NOTENOUGHLETTERS));
+        setError(setStatusMessage(Status.NOTENOUGHLETTERS));
       } else {
-        console.log('call checkword');
         let formattedGuess = checkWord();
         console.log(formattedGuess);
         if (currGuess === word) {
@@ -28,8 +50,6 @@ const useWordle = (word: string) => {
         }
         setGuesses((prev) => {
           prev[turn] = formattedGuess;
-          console.log(prev);
-
           return prev;
         });
         setTurn((prev) => prev + 1);
@@ -64,7 +84,7 @@ const useWordle = (word: string) => {
     return formattedGuess;
   };
 
-  return { turn, currGuess, guesses, isWinner, handleKeyup };
+  return { turn, currGuess, guesses, isWinner, handleKeyup, error };
 };
 
 export default useWordle;

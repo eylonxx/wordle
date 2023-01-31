@@ -8,7 +8,7 @@ interface BoardProps {
 }
 
 const Board = ({ word }: BoardProps) => {
-  const { currGuess, handleKeyup, turn, guesses } = useWordle(word);
+  const { currGuess, handleKeyup, turn, guesses, error } = useWordle(word);
   console.log(word);
 
   useEffect(() => {
@@ -37,6 +37,7 @@ const Board = ({ word }: BoardProps) => {
       {guesses.map((guess, i) => {
         return <Row currGuess={i === turn ? formatGuess() : guess} />;
       })}
+      {!!error.length && <h3 className="text-3xl font-bold">{error}</h3>}
     </div>
   );
 };
